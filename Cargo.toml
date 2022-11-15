@@ -1,0 +1,27 @@
+[package]
+name = "web"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = {version = "1", features = ["full"]}
+futures = "0.3.25"
+thiserror = "1.0.37"
+# JSON
+serde = "1.0.147"
+serde_json = "1.0.87"
+serde_derive = "1.0.147"
+# Web
+actix-web = "4.2.1"
+# DB
+sqlx = {version = "0.6.2", features = [ "runtime-tokio-rustls", "postgres", "chrono" ]}
+sqlb = "0.0.8"
+# Crypt
+bcrypt = "0.13.0"
+hmac = "0.12.1"
+sha2 = "0.10.6"
+uuid = {version = "1.2.1", features = [ "v4" ]}
+# Jwt
+jwt = "0.16.0"
