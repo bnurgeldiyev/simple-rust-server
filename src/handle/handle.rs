@@ -1,41 +1,13 @@
 use serde::{Serialize, Deserialize};
 use crate::model::db::Db;
-use crate::model::todo::{TodoUser, User, UserRequest};
+use crate::model::todo::TodoUser;
 use uuid::Uuid;
 
-extern crate bcrypt;
-
 use bcrypt::{hash, verify};
-use crate::handle::token::generate_access_token;
+use crate::entity::user::{UserAuth, UserBase, UserRequest, UserAuthResponse, UserCreate};
+use crate::entity::token::generate_access_token;
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct UserAuth {
-    username: String,
-    password: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct UserAuthResponse {
-    access_token: String,
-    refresh_token: String,
-}
-
-impl UserAuthResponse {
-    fn init() -> UserAuthResponse {
-        UserAuthResponse {
-            access_token: String::from(""),
-            refresh_token: String::from(""),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct UserCreate {
-    username: String,
-    password: String,
-    firstname: String,
-    lastname: String,
-}
+extern crate bcrypt;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HandleNotFound {
@@ -102,7 +74,7 @@ pub async fn handle_user_create(body_str: &String, db: &Db) -> UserCreate {
     des
 }
 
-pub async fn handle_user_get(id: i32, db: &Db) -> Result<GeneralResponse<User>, sqlx::Error> {
+pub async fn handle_user_get(id: i32, db: &Db) -> Result<GeneralResponse<UserBase>, sqlx::Error> {
     let user = match TodoUser::get(id, &db).await {
         Ok(res) => {
             res
@@ -120,7 +92,7 @@ pub async fn handle_user_get(id: i32, db: &Db) -> Result<GeneralResponse<User>, 
     Ok(resp)
 }
 
-pub async fn handle_user_list(db: &Db) -> Result<GeneralResponse<Vec<User>>, sqlx::Error> {
+pub async fn handle_user_list(db: &Db) -> Result<GeneralResponse<Vec<UserBase>>, sqlx::Error> {
     let user_list = match TodoUser::list(&db).await {
         Ok(resp) => {
             resp
