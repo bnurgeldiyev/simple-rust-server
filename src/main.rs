@@ -1,13 +1,13 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder, HttpRequest};
 use actix_web::http::header::ContentType;
+use crate::entity::user::UserBase;
 use crate::handle::handle::{GeneralResponse, handle_user_auth, handle_user_create, handle_user_get, handle_user_list};
-use crate::handle::token::{AccessTokenError, is_unauthorized };
+use crate::entity::token::{AccessTokenError, is_unauthorized };
 use crate::model::db::{Db, init_db};
-use crate::model::todo::User;
 
 mod model;
-mod security;
 mod handle;
+mod entity;
 
 async fn user_create(body: String, db: web::Data<Db>) -> impl Responder {
     let user = handle_user_create(&body, &db).await;
@@ -22,7 +22,7 @@ async fn get_user(path: web::Path<i32>, db: web::Data<Db>) -> impl Responder {
             HttpResponse::Ok().content_type(ContentType::json()).body(serde_json::to_string(&res).unwrap())
         },
         Err(err) => {
-            let resp: GeneralResponse<User> = GeneralResponse{
+            let resp: GeneralResponse<UserBase> = GeneralResponse{
                 status: false,
                 data: None,
             };
@@ -47,7 +47,7 @@ async fn list(db: web::Data<Db>, req: HttpRequest) -> impl Responder {
             return if err == AccessTokenError::TokenInvalid {
                 println!("Token invalid");
 
-                let resp: GeneralResponse<User> = GeneralResponse {
+                let resp: GeneralResponse<UserBase> = GeneralResponse {
                     status: false,
                     data: None,
                 };
@@ -55,7 +55,7 @@ async fn list(db: web::Data<Db>, req: HttpRequest) -> impl Responder {
                 HttpResponse::Unauthorized().content_type(ContentType::json()).body(serde_json::to_string(&resp).unwrap())
             } else {
                 println!("Token expired");
-                let resp: GeneralResponse<User> = GeneralResponse {
+                let resp: GeneralResponse<UserBase> = GeneralResponse {
                     status: false,
                     data: None,
                 };
@@ -72,7 +72,7 @@ async fn list(db: web::Data<Db>, req: HttpRequest) -> impl Responder {
         },
         Err(_) => {
 
-            let resp: GeneralResponse<User> = GeneralResponse{
+            let resp: GeneralResponse<UserBase> = GeneralResponse{
                 status: false,
                 data: None,
             };
@@ -98,7 +98,7 @@ async fn who_ami(req: HttpRequest, db: web::Data<Db>) -> impl Responder {
             if err == AccessTokenError::TokenInvalid {
                 println!("Token invalid");
 
-                let resp: GeneralResponse<User> = GeneralResponse {
+                let resp: GeneralResponse<UserBase> = GeneralResponse {
                     status: false,
                     data: None,
                 };
@@ -106,7 +106,7 @@ async fn who_ami(req: HttpRequest, db: web::Data<Db>) -> impl Responder {
                 HttpResponse::Unauthorized().content_type(ContentType::json()).body(serde_json::to_string(&resp).unwrap())
             } else {
                 println!("Token expired");
-                let resp: GeneralResponse<User> = GeneralResponse {
+                let resp: GeneralResponse<UserBase> = GeneralResponse {
                     status: false,
                     data: None,
                 };
