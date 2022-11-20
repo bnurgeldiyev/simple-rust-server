@@ -1,25 +1,18 @@
 use sqlx::{Pool, Postgres};
 // use tokio::fs;
 use sqlx::postgres::PgPoolOptions;
-
-const PG_HOST: &str = "localhost";
-const PG_ROOT_DB: &str = "rust";
-const PG_ROOT_USER: &str = "bnurgeldiyev";
-const PG_ROOT_PWD: &str = "123qweASD";
-
-// const SQL_DIR: &str = "sql/";
-// const SQL_RECREATE: &str = "sql/db.sql";
+use crate::entity::datastore::Datastore;
 
 pub type Db = Pool<Postgres>;
 
-pub async fn init_db() -> Result<Db, sqlx::Error> {
+pub async fn init_db(data_store: &Datastore) -> Result<Db, sqlx::Error> {
     /*
     {
         let root_db = new_db_pool(PG_HOST, PG_ROOT_DB, PG_ROOT_USER, PG_ROOT_PWD, 1).await?;
         pexec(&root_db, SQL_RECREATE).await?;
     }*/
 
-    new_db_pool(PG_HOST, PG_ROOT_DB, PG_ROOT_USER, PG_ROOT_PWD, 5).await
+    new_db_pool(data_store.db_host.as_str(), data_store.db_name.as_str(), data_store.db_user.as_str(), data_store.db_password.as_str(), 5).await
 }
 /*
 async fn pexec(db: &Db, file: &str) -> Result<(), sqlx::Error> {
