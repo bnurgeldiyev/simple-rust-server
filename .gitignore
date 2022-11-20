@@ -6,6 +6,7 @@ bin/
 build/
 gen/
 deps/
+config.json
 exampleProject
 testData
 .DS_Store
