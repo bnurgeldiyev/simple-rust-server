@@ -29,7 +29,7 @@ fn read_config(path: String) -> Result<Datastore, io::Error> {
 #[actix_web::main]
 async fn main() -> io::Result<()> {
 
-    let datastore = match read_config("config.json".to_string()) {
+    let pg_data = match read_config("config.json".to_string()) {
         Ok(res) => {
             res
         },
@@ -38,7 +38,7 @@ async fn main() -> io::Result<()> {
         }
     };
 
-    let db = match init_db(&datastore).await {
+    let db = match init_db(&pg_data).await {
         Ok(database) => {
             database
         },

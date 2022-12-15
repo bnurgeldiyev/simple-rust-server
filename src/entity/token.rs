@@ -75,7 +75,15 @@ async fn verify_access_token(access_token: &str) -> Result<AccessTokenResult, Ac
 }
 
 pub async fn is_unauthorized(req: &HttpRequest, db: &Db) -> Result<ActionInfo, AccessTokenError> {
-    let token = req.headers().get("authorization").unwrap().to_str().unwrap();
+    let token = match req.headers().get("authorization") {
+        Some(res) => {
+            res.to_str().unwrap()
+        },
+
+        None => {
+            return Err(AccessTokenError::TokenInvalid);
+        }
+    };
     let token = &token[7..];
 
     let token_response: AccessTokenResult;

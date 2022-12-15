@@ -5,14 +5,14 @@ use crate::entity::datastore::Datastore;
 
 pub type Db = Pool<Postgres>;
 
-pub async fn init_db(data_store: &Datastore) -> Result<Db, sqlx::Error> {
+pub async fn init_db(pg_data: &Datastore) -> Result<Db, sqlx::Error> {
     /*
     {
         let root_db = new_db_pool(PG_HOST, PG_ROOT_DB, PG_ROOT_USER, PG_ROOT_PWD, 1).await?;
         pexec(&root_db, SQL_RECREATE).await?;
     }*/
 
-    new_db_pool(data_store.db_host.as_str(), data_store.db_name.as_str(), data_store.db_user.as_str(), data_store.db_password.as_str(), 5).await
+    new_db_pool(pg_data.db_host.as_str(), pg_data.db_name.as_str(), pg_data.db_user.as_str(), pg_data.db_password.as_str(), 5).await
 }
 /*
 async fn pexec(db: &Db, file: &str) -> Result<(), sqlx::Error> {
